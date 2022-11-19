@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1668870746 source:c:\users\tolunay\documents\github\pm\hoofd.cc
+	<iostream>
+	"othellobord.h"
+
+1668872578 c:\users\tolunay\documents\github\pm\othellobord.h
+
+1668870702 source:c:\users\tolunay\documents\github\pm\othellobord.cc
+	<iostream>
+	"othellobord.h"
+
