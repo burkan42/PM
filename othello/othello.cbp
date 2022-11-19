@@ -31,6 +31,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../hoofd.cc" />
+		<Unit filename="../othellobord.cc" />
+		<Unit filename="../othellobord.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
