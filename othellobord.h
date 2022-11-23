@@ -20,6 +20,7 @@ class othellobord {
     void drukaf ( );
     void maakbord ( );
     void menu( );
+    bordvakje* kopieer(bordvakje* ingang); //kopieert de pointer structuur van gegeven ingangpointer
     bordvakje* rijtje (bordvakje* ingang);
     int breedte, hoogte;
     // TODO

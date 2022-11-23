@@ -65,6 +65,45 @@ void othellobord::ritsen (bordvakje * boven, bordvakje * onder){
     }
 }
 
+//kopieert de pointer structuur van gegeven ingangpointer
+bordvakje* othellobord::kopieer(bordvakje* ingang){
+
+    bordvakje* kopie = new bordvakje; //wijst naar ingang van huidige bord
+    bordvakje* kopieLoper = kopie; //gaat mee met loper van kopie, represent vorige vakje
+    bordvakje* ingangLoper = ingang; //loopt door oude bord
+    bordvakje* rijIngangLoper = ingang; //loopt door rijen van originele bord
+    bordvakje* rijKopieLoper = kopie; //loopt door rijen van kopie bord
+
+    kopie->kleur = ingang->kleur; //kleur van het eerste originele vakje kopieren naar nieuwe vakje
+    ingangLoper = ingangLoper->buren[2]; //ingangloper gaat naar volgende
+
+    while (rijIngangLoper != nullptr){
+
+        while (ingangLoper != nullptr){ //loop door kolom
+
+            bordvakje* loper = new bordvakje; //loper is onze volgende vakje
+
+            kopieLoper->buren[2] = loper;   //kopieLoper wijst naar rechter loper
+            loper->buren[6] = kopieLoper ;  //loper wijst naast vorige vak
+
+            loper->kleur = ingangLoper->kleur; //kleur van volgende originele vakje kopieren naar nieuwe vakje
+            kopieLoper = loper; //kopieloper wordt loper
+            ingangLoper = ingangLoper->buren[2]; //ingangloper gaat naar volgende
+        }
+        //!ritsen toevoegen
+        bordvakje * newRowKopie = new bordvakje; //eerst vakje van nieuwe rij in kopie bord
+        kopieLoper = newRowKopie; //kopieloper gaat door in volgende rij
+        rijKopieLoper->buren[4] = newRowKopie ; //rijenloper wijst naar new vakje
+        newRowKopie->buren[0] = rijKopieLoper; //new vakje wijst naar de rijenloper
+        rijIngangLoper = rijIngangLoper->buren[4]; //springt naar volgende rij originele bord
+        ingangLoper = rijIngangLoper; //ingangloper gaat door in volgende rij
+        rijKopieLoper = rijKopieLoper->buren[4]; //springt naar volgende rij kopie bord
+
+    }
+    return kopie;//return ingang van het kopie bord
+
+}
+
 //We zetten het bord in elkaar door middel van twee lopers:
 void othellobord::maakbord ( ){
 
@@ -87,7 +126,7 @@ void othellobord::drukaf ( ) {
     cout << "Dit Othellobord ziet er mooi uit." << endl;
 
     //cout << ingang << endl;
-    bordvakje* loper1 = ingang; //loper1 begint bij ingang
+    bordvakje* loper1 = kopieer(ingang); //loper1 begint bij ingang
     bordvakje* loper2 = loper1; //loper2 begint bij ingang
 
     while (loper1 != NULL){ //loop door rijen
