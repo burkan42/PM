@@ -7,11 +7,11 @@ othellobord::othellobord ( ) {
 	breedte = 8;
 	hoogte = 8;
 	ingang = new bordvakje;
-  // TODO
+
 }//othellobord::othellobord
 
 othellobord::~othellobord ( ) {
-  // TODO
+
 }//othellobord::~othellobord
 
 bordvakje::bordvakje ( ){
@@ -39,10 +39,8 @@ bordvakje* othellobord::rijtje (bordvakje * ingang){
     }
 
     nieuw->buren[2] = nullptr; //aan het einde van rij wijst naar niks
-    loper = new bordvakje; //nieuw vakje voor rijtje eronder
-    ingang->buren[4] = loper; //wijs naar volgende rij
 
-    return loper; //loper wordt nieuwe ingang
+    return ingang; //loper wordt nieuwe ingang
 }
 
 //Ritsen wordt gebruikt om een boven- en onderrij aan elkaar te binden.
@@ -70,15 +68,17 @@ void othellobord::ritsen (bordvakje * boven, bordvakje * onder){
 //We zetten het bord in elkaar door middel van twee lopers:
 void othellobord::maakbord ( ){
 
-    bordvakje * boven = ingang;
-    bordvakje * onder = rijtje(ingang);
+    bordvakje * boven = ingang; //boven wijst naar ingang
+    bordvakje * onder;
+    rijtje(ingang); //eerste rijtje aanmaken
+    //bordvakje * onder = rijtje(ingang);
 
-    for ( int i = 0; i < hoogte; i++){
-        ritsen (boven, onder);
-        onder = boven;
-        boven = rijtje(); //controleren
-        //nog een onder toevoegen
-
+    for ( int i = 0; i < hoogte - 1; i++){
+        bordvakje * loper = new bordvakje; //nieuwe ingang voor nieuwe rij
+        boven->buren[4] = loper; //de bovenbuur wijst naar onderrij
+        onder = rijtje(loper); //op plaats van loper rij maken
+        ritsen(boven, onder); //risten van de boven en onder rij
+        boven = loper; //nieuwe rij wordt de bovenste rij
     }
 
 }
@@ -86,6 +86,7 @@ void othellobord::maakbord ( ){
 void othellobord::drukaf ( ) {
     cout << "Dit Othellobord ziet er mooi uit." << endl;
 
+    //cout << ingang << endl;
     bordvakje* loper1 = ingang; //loper1 begint bij ingang
     bordvakje* loper2 = loper1; //loper2 begint bij ingang
 
@@ -100,23 +101,7 @@ void othellobord::drukaf ( ) {
         loper1 = loper1->buren[4]; //naar volgende rij gaan
     }
 }//othellobord::drukaf
-void othellobord::drukaf ( ) {
-    cout << "Dit Othellobord ziet er mooi uit." << endl;
 
-    bordvakje* loper1 = ingang; //loper1 begint bij ingang
-    bordvakje* loper2 = loper1; //loper2 begint bij ingang
-
-    while (loper1 != NULL){ //loop door rijen
-        loper2 = loper1;
-        while (loper2->buren[2] != NULL){ //loop door kolommen
-            cout << loper2->kleur << "  ";
-            loper2 = loper2->buren[2]; //naar volgende vakje
-        }
-        cout << loper2->kleur << "  "; //laatse van rij printen
-        cout << endl;
-        loper1 = loper1->buren[4]; //naar volgende rij gaan
-    }
-}//othellobord::drukaf
 
 void othellobord::menu ( ){
     char i;

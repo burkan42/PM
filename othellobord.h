@@ -19,6 +19,7 @@ class othellobord {
     void computerzet ( );
     void drukaf ( );
     void maakbord ( );
+    void menu( );
     bordvakje* rijtje (bordvakje* ingang);
     int breedte, hoogte;
     // TODO

@@ -5,7 +5,7 @@ using namespace std;
 
 int main ( ) {
 	othellobord a;
-	a.menu( );
+//	a.menu( );
     a.maakbord();
     a.drukaf();
 	return 0;
