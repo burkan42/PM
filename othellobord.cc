@@ -100,5 +100,82 @@ void othellobord::drukaf ( ) {
         loper1 = loper1->buren[4]; //naar volgende rij gaan
     }
 }//othellobord::drukaf
+void othellobord::drukaf ( ) {
+    cout << "Dit Othellobord ziet er mooi uit." << endl;
+
+    bordvakje* loper1 = ingang; //loper1 begint bij ingang
+    bordvakje* loper2 = loper1; //loper2 begint bij ingang
+
+    while (loper1 != NULL){ //loop door rijen
+        loper2 = loper1;
+        while (loper2->buren[2] != NULL){ //loop door kolommen
+            cout << loper2->kleur << "  ";
+            loper2 = loper2->buren[2]; //naar volgende vakje
+        }
+        cout << loper2->kleur << "  "; //laatse van rij printen
+        cout << endl;
+        loper1 = loper1->buren[4]; //naar volgende rij gaan
+    }
+}//othellobord::drukaf
+
+void othellobord::menu ( ){
+    char i;
+    cout << "WELCOME TO OTHELLO!!" << endl;
+    cout <<  "Wil je voor de zwarte stenen als een mens of computer spelen?"<< endl;
+    cout << "voor een mens type M en voor een computer type C!"<< endl;
+    cin >> i;
+    cout <<  "Wil je voor de witte stenen als een mens of computer spelen?"<< endl;
+    cout << "voor een mens type M en voor een computer type C!"<< endl;
+    cin>> i;
+    cout << "De grootte van het bord is momenteel 8 bij 8 wil je die aanpassen?"<<endl;
+    cout<< "Type J voor ja en N voor nee!"<< endl;
+    cin >> i;
+
+    switch (i){
+        case 'M':
+        case 'm':
+            cout << "U heeft voor een mens gekozen!"<< endl;
+            break;
+        case 'C':
+        case 'c':
+            cout << "U heeft voor een computer gekozen!"<< endl;
+            break;
+        case 'J':
+        case 'j':
+            cout << "Type het gewenste aantal rijen (groter of gelijk aan 2 en even):"<<endl;
+            cin >> breedte;//minstens 2 en even
+                if (breedte < 2 && breedte%2==0){
+                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+                    cin >> breedte;
+                }
+                if (breedte > 2 && breedte%2==!0){
+                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+                    cin >> breedte;
+                }
+
+            cout << "Type het gewenste aantal kollomen:"<<endl;
+            cin >> hoogte;//minstens 2 en even
+                if (hoogte < 2 && hoogte%2==0){
+                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+                    cin >> breedte;
+                }
+                if (hoogte > 2 && hoogte%2==!0){
+                    cout << "Hoogte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+                    cin >> hoogte;
+                }
+            cout << "Het bord is gewijzigd naar "<< hoogte << "x"<< breedte;
+            break;
+
+        case 'N':
+        case 'n':
+            cout<< "De groote van het bord is " << hoogte <<"x" << breedte;
+        default:
+            cout << "No match! Please only input allowed characters!";
+            break;
+    }
+
+
+
+}
 
 // TODO
