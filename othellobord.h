@@ -21,7 +21,11 @@ class othellobord {
     void maakbord ( );
     void menu( );
     bordvakje* kopieer(bordvakje* ingang); //kopieert de pointer structuur van gegeven ingangpointer
-    bordvakje* rijtje (bordvakje* ingang);
+    bordvakje* kopieerRijtje(bordvakje* ingang, bordvakje* kopie); //kopieert een hele rij van een ingangpointer naar een kopiepointer
+    bordvakje* rijtje (bordvakje* ingang); //maakt een rijtje van bordvakjes
+    bordvakje* positie (int x, int y); //returnt pointer van bordvakje gegeven de coordinaten
     int breedte, hoogte;
-    // TODO
+    int beurt; //wie aan de beurt is (0 = zwart, 1 = wit)
+    bool toegestaan (int x, int y); //kijkt of schijfje op een gegeven coordinaat geplaatst mag worden
+
 };//othellobord

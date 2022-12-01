@@ -3,36 +3,68 @@
 #include "othellobord.h"
 using namespace std;
 
-othellobord::othellobord ( ) {
-	breedte = 8;
-	hoogte = 8;
-	ingang = new bordvakje;
+othellobord::othellobord ( )
+{
+    breedte = 8;
+    hoogte = 8;
+    ingang = new bordvakje;
+    beurt = 0;//zwart begint altijd eerst
 
 }//othellobord::othellobord
 
-othellobord::~othellobord ( ) {
+othellobord::~othellobord ( )
+{
 
 }//othellobord::~othellobord
 
-bordvakje::bordvakje ( ){
+bordvakje::bordvakje ( )
+{
 
     //buren moeten leeg zijn,
     //dus gelijkmaken aan NULL.
-    for (int i = 0; i < 8; i++){
+    for (int i = 0; i < 8; i++)
+    {
         buren[i] = NULL;
     }
 }
+//Ritsen wordt gebruikt om een boven- en onderrij aan elkaar te binden.
+void othellobord::ritsen (bordvakje * boven, bordvakje * onder)
+{
 
+    for ( int i = 0; i < breedte; i++)
+    {
+
+        boven -> buren[4] = onder; //bovenrij aan onderrij laten wijzen
+        onder -> buren[0] = boven; //onderrij aan bovenrij laten wijzen
+
+        if ( i < breedte)
+        {
+            boven -> buren [3] = onder-> buren [2]; //naar buur rechtsonder wijzen
+            onder -> buren [1] = boven-> buren [2]; //naar buur rechtsboven wijzen
+        }
+        if ( i > 0 )
+        {
+            onder -> buren [7] = boven-> buren [6]; //naar buur linksboven wijzen
+            boven -> buren [5] = onder-> buren [6]; //naar buur linksonder wijzen
+        }
+
+        boven= boven->buren [2]; //boven loper naar rechter vakje gaan
+        onder= onder->buren [2]; //onder loper naar rechter vakje gaan
+    }
+}
 //hier maken we een rij van bordvakjes
-bordvakje* othellobord::rijtje (bordvakje * ingang){
+bordvakje* othellobord::rijtje (bordvakje * ingang)
+{
 
     bordvakje * nieuw = ingang; //new vakje wijst naar ingang
     bordvakje * loper; //loper voor aanmaken van nieuwe vakje
+    nieuw->kleur = '-'; //eerste ingang vullen
 
-    for (int i = 0; i < breedte - 1; i++){
+    for (int i = 0; i < breedte - 1; i++)
+    {
         loper = new bordvakje; //maak nieuwe vakje aan
         loper->buren[6] = nieuw;//wijst linker vakje
-        nieuw->kleur = '-';
+
         loper->kleur = '-';
         nieuw->buren[2] = loper;//wijst naar rechter vakje
         nieuw = loper; //ingang wordt nu de rechter buurman
@@ -43,61 +75,53 @@ bordvakje* othellobord::rijtje (bordvakje * ingang){
     return ingang; //loper wordt nieuwe ingang
 }
 
-//Ritsen wordt gebruikt om een boven- en onderrij aan elkaar te binden.
-void othellobord::ritsen (bordvakje * boven, bordvakje * onder){
+//hier kopieeren we een rij van ingang naar kopie
+bordvakje* othellobord::kopieerRijtje(bordvakje* ingang, bordvakje* kopie)
+{
 
-    for ( int i = 0; i < breedte; i++){
+    bordvakje* ingangLoper = ingang; //loopt door oude bord
+    bordvakje* kopieLoper = kopie; //gaat mee met loper van kopie, represent vorige vakje
+    kopieLoper->kleur = ingangLoper->kleur; //kleur van het eerste originele vakje kopieren naar nieuwe vakje
+    ingangLoper = ingangLoper->buren[2];//wijst naar volgende vak
 
-        boven -> buren[6] = onder; //bovenrij aan onderrij laten wijzen
-        onder -> buren[0] = boven; //onderrij aan bovenrij laten wijzen
+    while (ingangLoper != nullptr)  //loop door ingang zolang hij nergens naartoe wijst
+    {
+        bordvakje* loper = new bordvakje; //loper is onze volgende vakje
 
-        if ( i < breedte){
-            boven -> buren [3] = onder-> buren [2]; //naar buur rechtsonder wijzen
-            onder -> buren [1] = boven-> buren [2]; //naar buur rechtsboven wijzen
-        }
-        if ( i > 0 ){
-            onder -> buren [7] = boven-> buren [6]; //naar buur linksboven wijzen
-            boven -> buren [5] = onder-> buren [6]; //naar buur linksonder wijzen
-        }
+        kopieLoper->buren[2] = loper;   //kopieLoper wijst naar rechter loper
+        loper->buren[6] = kopieLoper ;  //loper wijst naast vorige vak
 
-        boven= boven->buren [2]; //boven loper naar rechter vakje gaan
-        onder= onder->buren [2]; //onder loper naar rechter vakje gaan
+        loper->kleur = ingangLoper->kleur; //kleur van volgende originele vakje kopieren naar nieuwe vakje
+        kopieLoper = loper; //kopieloper wordt loper
+        ingangLoper = ingangLoper->buren[2]; //ingangloper gaat naar volgende
     }
+
+    return kopie;
 }
 
 //kopieert de pointer structuur van gegeven ingangpointer
-bordvakje* othellobord::kopieer(bordvakje* ingang){
+bordvakje* othellobord::kopieer(bordvakje* ingang)
+{
 
     bordvakje* kopie = new bordvakje; //wijst naar ingang van huidige bord
-    bordvakje* kopieLoper = kopie; //gaat mee met loper van kopie, represent vorige vakje
     bordvakje* ingangLoper = ingang; //loopt door oude bord
     bordvakje* rijIngangLoper = ingang; //loopt door rijen van originele bord
-    bordvakje* rijKopieLoper = kopie; //loopt door rijen van kopie bord
+    bordvakje* bovenKopie = kopie; //bovenrij van kopie bord
+    bordvakje* onderKopie; //onderrij van kopie
 
-    kopie->kleur = ingang->kleur; //kleur van het eerste originele vakje kopieren naar nieuwe vakje
     ingangLoper = ingangLoper->buren[2]; //ingangloper gaat naar volgende
+    kopieerRijtje(ingang, kopie); //eerste rij kopieren
 
-    while (rijIngangLoper != nullptr){
+    while (rijIngangLoper != nullptr)
+    {
 
-        while (ingangLoper != nullptr){ //loop door kolom
-
-            bordvakje* loper = new bordvakje; //loper is onze volgende vakje
-
-            kopieLoper->buren[2] = loper;   //kopieLoper wijst naar rechter loper
-            loper->buren[6] = kopieLoper ;  //loper wijst naast vorige vak
-
-            loper->kleur = ingangLoper->kleur; //kleur van volgende originele vakje kopieren naar nieuwe vakje
-            kopieLoper = loper; //kopieloper wordt loper
-            ingangLoper = ingangLoper->buren[2]; //ingangloper gaat naar volgende
-        }
-        //!ritsen toevoegen
         bordvakje * newRowKopie = new bordvakje; //eerst vakje van nieuwe rij in kopie bord
-        kopieLoper = newRowKopie; //kopieloper gaat door in volgende rij
-        rijKopieLoper->buren[4] = newRowKopie ; //rijenloper wijst naar new vakje
-        newRowKopie->buren[0] = rijKopieLoper; //new vakje wijst naar de rijenloper
+        bovenKopie->buren[4] = newRowKopie ; //bovenKopie wijst naar new vakje
+        newRowKopie->buren[0] = bovenKopie; //new vakje wijst naar de bovenKopie
+        onderKopie = kopieerRijtje(ingangLoper, newRowKopie); //ritsen van boven en onderij van kopie bord
         rijIngangLoper = rijIngangLoper->buren[4]; //springt naar volgende rij originele bord
         ingangLoper = rijIngangLoper; //ingangloper gaat door in volgende rij
-        rijKopieLoper = rijKopieLoper->buren[4]; //springt naar volgende rij kopie bord
+        bovenKopie = newRowKopie; //springt naar volgende rij kopie bord
 
     }
     return kopie;//return ingang van het kopie bord
@@ -105,14 +129,16 @@ bordvakje* othellobord::kopieer(bordvakje* ingang){
 }
 
 //We zetten het bord in elkaar door middel van twee lopers:
-void othellobord::maakbord ( ){
+void othellobord::maakbord ( )
+{
 
     bordvakje * boven = ingang; //boven wijst naar ingang
     bordvakje * onder;
     rijtje(ingang); //eerste rijtje aanmaken
-    //bordvakje * onder = rijtje(ingang);
 
-    for ( int i = 0; i < hoogte - 1; i++){
+
+    for ( int i = 0; i < hoogte - 1; i++)
+    {
         bordvakje * loper = new bordvakje; //nieuwe ingang voor nieuwe rij
         boven->buren[4] = loper; //de bovenbuur wijst naar onderrij
         onder = rijtje(loper); //op plaats van loper rij maken
@@ -120,18 +146,96 @@ void othellobord::maakbord ( ){
         boven = loper; //nieuwe rij wordt de bovenste rij
     }
 
+    //beginbord kleuren plaatsen
+    bordvakje* kleurtje = ingang;
+    bordvakje* loper; //door rijen lopen
+
+    for ( int k = 0; k < hoogte - 1; k++)
+    {
+        loper = kleurtje;
+        for ( int l = 0; l < breedte - 1; l++)
+        {
+
+            if (l == breedte/2 - 1 && k == hoogte/2 - 1 )
+            {
+                kleurtje->kleur = 'W';//eerste witte schijfje plaatsen
+                kleurtje->buren[2]->kleur = 'Z';
+                kleurtje->buren[4]->kleur = 'Z';
+                kleurtje->buren[3]->kleur = 'W';
+            }
+            kleurtje = kleurtje->buren[2]; //naar volgende vakje
+        }
+        loper = loper->buren[4]; //loper naar volgende rij
+        kleurtje = loper; //kleurtje wijst naar volgende rij
+    }
+
 }
 
-void othellobord::drukaf ( ) {
-    cout << "Dit Othellobord ziet er mooi uit." << endl;
+//returnt pointer van bordvakje gegeven de coordinaten
+bordvakje* othellobord::positie (int x, int y)
+{
 
-    //cout << ingang << endl;
-    bordvakje* loper1 = kopieer(ingang); //loper1 begint bij ingang
+    bordvakje* loper = ingang; //loper begint bij ingang
+    bordvakje* loper2; //loper door rijen
+
+    if (x > breedte|| y > hoogte)
+    {
+        cout << "Coordinaten buiten het bord!" << endl;
+        return 0;
+    }
+
+    for ( int k = 1; k < hoogte - 1; k++)
+    {
+        loper2 = loper;
+
+        for ( int l = 1; l < breedte - 1; l++)
+        {
+            if(l == x && k == y)  //als zowel loper als loper2 op juiste coordinaat zijn
+            {
+                return loper; //returnt pointer van coordinaat
+            }
+
+            loper = loper->buren[2]; //naar volgende vakje
+        }
+        loper2 = loper2->buren[4]; //loper2 naar volgende rij
+        loper = loper2; //loper wijst naar volgende rij
+    }
+}
+
+// Gegeven een x en y coordinaat controleert deze functie
+// of de zet mogelijk is voor de huidige speler
+bool othellobord::toegestaan (int x, int y)
+{
+    bordvakje* start = positie(x, y); //neemt de pointer van positie opgegeven coordinate
+
+    for (int i = 0; i < 8; i ++)
+    {
+
+    }
+}
+
+//drukt bord af
+void othellobord::drukaf ( )
+{
+
+    bordvakje* loper1 = ingang; //loper1 begint bij ingang
     bordvakje* loper2 = loper1; //loper2 begint bij ingang
 
-    while (loper1 != NULL){ //loop door rijen
+    cout << "  ";
+    for (int i = 1; i < breedte + 1; i++) //kolommen nummeren
+    {
+        cout << i << "  ";
+    }
+    cout << endl;
+
+    int j = 1; //rijen nummeren
+    while (loper1 != NULL)  //loop door rijen
+    {
         loper2 = loper1;
-        while (loper2->buren[2] != NULL){ //loop door kolommen
+        cout << j << " ";
+        j++;
+        while (loper2->buren[2] != NULL)  //loop door kolommen
+        {
             cout << loper2->kleur << "  ";
             loper2 = loper2->buren[2]; //naar volgende vakje
         }
@@ -142,7 +246,8 @@ void othellobord::drukaf ( ) {
 }//othellobord::drukaf
 
 
-void othellobord::menu ( ){
+void othellobord::menu ( )
+{
     char i;
     cout << "WELCOME TO OTHELLO!!" << endl;
     cout <<  "Wil je voor de zwarte stenen als een mens of computer spelen?"<< endl;
@@ -155,47 +260,53 @@ void othellobord::menu ( ){
     cout<< "Type J voor ja en N voor nee!"<< endl;
     cin >> i;
 
-    switch (i){
-        case 'M':
-        case 'm':
-            cout << "U heeft voor een mens gekozen!"<< endl;
-            break;
-        case 'C':
-        case 'c':
-            cout << "U heeft voor een computer gekozen!"<< endl;
-            break;
-        case 'J':
-        case 'j':
-            cout << "Type het gewenste aantal rijen (groter of gelijk aan 2 en even):"<<endl;
-            cin >> breedte;//minstens 2 en even
-                if (breedte < 2 && breedte%2==0){
-                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-                    cin >> breedte;
-                }
-                if (breedte > 2 && breedte%2==!0){
-                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-                    cin >> breedte;
-                }
+    switch (i)
+    {
+    case 'M':
+    case 'm':
+        cout << "U heeft voor een mens gekozen!"<< endl;
+        break;
+    case 'C':
+    case 'c':
+        cout << "U heeft voor een computer gekozen!"<< endl;
+        break;
+    case 'J':
+    case 'j':
+        cout << "Type het gewenste aantal rijen (groter of gelijk aan 2 en even):"<<endl;
+        cin >> hoogte;//minstens 2 en even
+        breedte = hoogte;
+        if (hoogte< 2 && hoogte%2==0)
+        {
+            cout << "hoogte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+            cin >> hoogte;
+            breedte = hoogte;
+        }
+        if (hoogte> 2 && hoogte%2==!0)
+        {
+            cout << "hoogte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+            cin >> hoogte;
+            breedte = hoogte;
+        }
 
-            cout << "Type het gewenste aantal kollomen:"<<endl;
-            cin >> hoogte;//minstens 2 en even
-                if (hoogte < 2 && hoogte%2==0){
-                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-                    cin >> breedte;
-                }
-                if (hoogte > 2 && hoogte%2==!0){
-                    cout << "Hoogte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-                    cin >> hoogte;
-                }
-            cout << "Het bord is gewijzigd naar "<< hoogte << "x"<< breedte;
-            break;
+//            cout << "Type het gewenste aantal kolommen:"<<endl;
+//            cin >> breedte;//minstens 2 en even
+//                if (breedte< 2 && breedte%2==0){
+//                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+//                    cin >> breedte;
+//                }
+//                if (breedte> 2 && breedte%2==!0){
+//                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+//                    cin >> breedte;
+//                }
+        cout << "Het bord is gewijzigd naar "<< hoogte << "x"<< breedte << endl;
+        break;
 
-        case 'N':
-        case 'n':
-            cout<< "De groote van het bord is " << hoogte <<"x" << breedte;
-        default:
-            cout << "No match! Please only input allowed characters!";
-            break;
+    case 'N':
+    case 'n':
+        cout<< "De groote van het bord is " << hoogte <<"x" << breedte << endl;
+    default:
+        cout << "No match! Please only input allowed characters!";
+        break;
     }
 
 
