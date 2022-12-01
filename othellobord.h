@@ -15,7 +15,7 @@ class othellobord {
   public:
     othellobord ( );
     ~othellobord ( );
-    void menszet( );
+    void menszet(int x, int y); //zet die een mens doet gegeven een coordinaat
     void computerzet ( );
     void drukaf ( );
     void maakbord ( );
@@ -27,5 +27,6 @@ class othellobord {
     int breedte, hoogte;
     int beurt; //wie aan de beurt is (0 = zwart, 1 = wit)
     bool toegestaan (int x, int y); //kijkt of schijfje op een gegeven coordinaat geplaatst mag worden
+    bool eindstand ( ); //kijken of spel nog gespeeld kan worden, of er nog mogelijke zetten zijn
 
 };//othellobord
