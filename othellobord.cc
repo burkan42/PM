@@ -281,6 +281,10 @@ void othellobord::computerzet(){
     int x = 1, y = 1; //definieren van x en y coordinaat
     char beurtkleur = 'Z'; //definier beurtkleur
 
+    if(beurt == 1)  //verander in beurtkleur
+    {
+        beurtkleur = 'W';
+    }
         while(!toegestaan(x, y)){ //zolang er geen toegestane zet is gegeneerd, random creeeren
             x = (rand( ) % 7) + 1; //bepaal x coordinaat
             y = (rand( ) % 7) + 1; //bepaal y coordinaat
@@ -293,11 +297,8 @@ void othellobord::computerzet(){
         }
 
 
+    cout << "beurtkleur " << beurt << endl;
 
-    if(beurt == 1)  //verander in beurtkleur
-    {
-        beurtkleur = 'W';
-    }
 
     //switch van beurt
     if(beurt == 1)
