@@ -13,6 +13,7 @@ int main ( ) {
     a.maakbord();
     //cout << a.eindstand()<< endl
     while(i < 9){
+        cout << "5" << endl;
         cin >> i;
         a.computerzet();
         a.drukaf();

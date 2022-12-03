@@ -14,6 +14,7 @@ othellobord::othellobord ( )
     beurt = 0;//zwart begint altijd eerst
     beurtkleur = 'Z'; //zwart begint altijd eerste
     richting = 0;
+    richtingen = {0};
 
 }//othellobord::othellobord
 
@@ -181,17 +182,14 @@ void othellobord::maakbord ( )
 //omdraaien.
 void othellobord::schijvenOmdraaien(bordvakje* ingang, bordvakje* uitgang, int richting)
 {
-
-    char beurtkleur = 'Z'; //definier beurtkleur
-
     if(beurt == 1)  //verander beurtkleur
     {
         beurtkleur = 'W';
     }
     while(ingang != uitgang)
     {
-        ingang->kleur = beurtkleur;
-        ingang = ingang->buren[richting];
+        ingang->kleur = beurtkleur;//kleur van huidige vak veranderen
+        ingang = ingang->buren[richting];//naar volgende vak gaan
     }
 }
 

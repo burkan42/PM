@@ -27,6 +27,7 @@ class othellobord {
     bordvakje* positie (int x, int y); //returnt pointer van bordvakje gegeven de coordinaten
 
     int breedte, hoogte;
+    int richtingen [8]; //wordt gebruikt om de richtingen te bepalen waarin schrijven gedraaid moeten worden
     void switchBeurt( );//switch de beurt van speler nadat zet is gemaakt
     char beurtkleur; //kleur van beurt die op bord komt
     int beurt; //wie aan de beurt is (0 = zwart, 1 = wit)
