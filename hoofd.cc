@@ -8,15 +8,15 @@ using namespace std;
 int main ( ) {
 
 	othellobord a;
+	int i = 0;
     //a.menu();
     a.maakbord();
     //cout << a.eindstand()<< endl
-    while(!a.eindstand()){
+    while(i < 9){
+        cin >> i;
         a.computerzet();
-        //cout << a.toegestaan(2,8);
-        //a.menszet(3,4);
         a.drukaf();
-
+        i++;
     }
 
 }//main
