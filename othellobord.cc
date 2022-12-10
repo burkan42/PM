@@ -14,7 +14,14 @@ othellobord::othellobord ( )
     beurt = 0;//zwart begint altijd eerst
     beurtkleur = 'Z'; //zwart begint altijd eerste
     richting = 0;
-    richtingen = {0};
+    aantall = 0;
+    aantalz = 0;
+    aantalw = 0;
+
+//    for (int i = 0; i < 8; i++){ //resetten van alle richtingen
+//        richtingen[i] = 0;
+//    }
+
 
 }//othellobord::othellobord
 
@@ -180,16 +187,43 @@ void othellobord::maakbord ( )
 //deze functie zal de schijven tussen de huidige schijf
 //en de schijf tot waar de kleuren tegenovergesteld zijn
 //omdraaien.
-void othellobord::schijvenOmdraaien(bordvakje* ingang, bordvakje* uitgang, int richting)
+void othellobord::schijvenOmdraaien(bordvakje* ingang)
 {
-    if(beurt == 1)  //verander beurtkleur
-    {
-        beurtkleur = 'W';
+    char leeg = '-';
+    char anderekleur = 'W'; //omgekeerde kleur van degene die aan beurt is
+
+    if(beurt == 1){
+        anderekleur = 'Z';
     }
-    while(ingang != uitgang)
+
+    for (int i = 0; i < 8; i ++)
     {
-        ingang->kleur = beurtkleur;//kleur van huidige vak veranderen
-        ingang = ingang->buren[richting];//naar volgende vak gaan
+        bordvakje* start = ingang; //het vakje van de zet
+
+        if(start->buren[i] != nullptr)  //zolang buren niet de grens van bord zijn
+        {
+            if(start->buren[i]->kleur != leeg && start->buren[i]->kleur == anderekleur) //indien er buren zijn en tegenovergesteld kleur van beurt
+            {
+                bordvakje* loper = start; //zal lopen tot einde van bord
+
+                while(loper->buren[i] != nullptr && loper->buren[i]->kleur != leeg)  //loper zoekt zelfde kleur in de richting van buur
+                {
+
+                    if(loper->buren[i]->kleur == beurtkleur)  //als er na een tegenstelde kleur een buurtkleur komt
+                    {
+                        bordvakje* uitgang = loper->buren[i]; //locatie van vakje waar zelfde kleur is, wordt opgeslagen.
+                        richting = i;
+
+                            while(start != uitgang)
+                            {
+                                start ->kleur = beurtkleur;//kleur van huidige vak veranderen
+                                start = start->buren[richting];//naar volgende vak gaan
+                            }
+                    }
+                    loper = loper->buren[i]; //naar volgende buur
+                }
+            }
+        }
     }
 }
 
@@ -249,7 +283,7 @@ void othellobord::menszet(int x, int y)
     if(toegestaan(x, y))  //indien zet toegestaan,  invullen
     {
         start->kleur = beurtkleur;
-        schijvenOmdraaien(start, uitgang,richting);
+        schijvenOmdraaien(start);
         switchBeurt();//switcht beurt
     }
     else
@@ -257,17 +291,50 @@ void othellobord::menszet(int x, int y)
         cout << "Zet niet toegestaan" << endl;
     }
 
-
 }
 
+//deze functie houdt bij hoevaak elke schijf voorkomt
+//in het huidige bord.
+void othellobord::score ( )
+{
+    bordvakje* loper = ingang;
+    bordvakje* loper2 = ingang;
+
+    //alle tellers resetten
+    aantall = 0;
+    aantalz = 0;
+    aantalw = 0;
+
+    while (loper2 != nullptr){ // hij gaat door alle rijen heen
+        loper = loper2; // loper moet weer naar de ingang van rij toe
+
+       while (loper != nullptr){ // hij gaat alle vakjes in een rij langs
+
+            if (loper->kleur == 'Z'){ // als vakje een Z heeft dan aantalz tellen
+               aantalz++;
+            }
+            if (loper->kleur == 'W'){ // als vakje een W heeft dan aantalw tellen
+               aantalw++;
+            }
+            if (loper->kleur == '-'){ // als vakje een - heeft dan aantall tellen
+               aantall++;
+            }
+
+            loper = loper->buren[2]; //loper naar volgende vakje
+
+        }
+        loper2 = loper2->buren[4]; // loper naar volgende rij
+
+    }
+    cout << " " << "W"  << "  "<< "Z" << "  "<< "L" << endl;
+    cout << " " << aantalw  << " "<< aantalz << " "<< aantall;
+}
 
 // Gegeven een x en y coordinaat controleert deze functie
 // of de zet mogelijk is voor de huidige speler
 bool othellobord::toegestaan (int x, int y)
 {
     char leeg = '-';
-    bool tempAllowed = false; //wordt true als er in een richting dezelfde
-
     if(positie(x,y) == 0)  //controleert of gegeven coordinaten toegestaan zijn, zo niet return false
     {
         return false;
@@ -286,13 +353,14 @@ bool othellobord::toegestaan (int x, int y)
             {
                 bordvakje* loper = start; //zal lopen tot einde van bord
 
-                while(loper->buren[i] != nullptr)  //loper zoekt zelfde kleur in de richting van buur
+                while(loper->buren[i] != nullptr && loper->buren[i]->kleur != leeg)  //loper zoekt zelfde kleur in de richting van buur
                 {
 
                     if(loper->buren[i]->kleur == beurtkleur)  //returnt true als er na een tegenstelde kleur een buurtkleur komt
                     {
                         uitgang = loper->buren[i]; //locatie van vakje waar zelfde kleur is, wordt opgeslagen.
                         richting = i;
+                        //richtingen[i] = uitgang; //die richting op schijven draaien
                         return true;
                     }
                     loper = loper->buren[i]; //naar volgende buur
@@ -309,18 +377,20 @@ void othellobord::computerzet()
 {
 
     srand(time(NULL)); //maakt mogelijk om telkens een nieuwe rand() te genereren
-    int x = 1, y = 1; //definieren van x en y coordinaat
+    int x = (rand( ) % hoogte) + 1, y = (rand( ) % hoogte) + 1; //definieren van x en y coordinaat
 
     while(!toegestaan(x, y))  //zolang er geen toegestane zet is gegeneerd, random creeeren
     {
-        x = (rand( ) % 7) + 1; //bepaal x coordinaat
-        y = (rand( ) % 7) + 1; //bepaal y coordinaat
+        x = (rand( ) % 8) + 1; //bepaal x coordinaat
+        y = (rand( ) % 8) + 1; //bepaal y coordinaat
 
         if(toegestaan(x, y))  //indien wel een toegestaan zet mogelijk is, deze zet doen
         {
+            cout << "beurtkleur: " << beurtkleur << endl;
+            cout << "move: " << x << ", " << y << endl;
             bordvakje* start = positie(x, y); //bepaal een start positie voor zet
             start->kleur = beurtkleur;
-            schijvenOmdraaien(start,uitgang,richting);
+            schijvenOmdraaien(start);
             switchBeurt();//switcht beurt
 
             break; //uit de loop gaan
@@ -337,11 +407,11 @@ bool othellobord::eindstand( )
     bordvakje* loper2; //loper door rijen
 
 
-    for ( int k = 1; k < hoogte - 1; k++)
+    for ( int k = 1; k < hoogte; k++)
     {
         loper2 = loper;
 
-        for ( int l = 1; l < breedte - 1; l++)
+        for ( int l = 1; l < breedte; l++)
         {
             if(toegestaan(l,k))  //indien er minimaal één toegestane zet is, return false
             {

@@ -9,13 +9,11 @@ int main ( ) {
 
 	othellobord a;
 	int i = 0;
-    //a.menu();
     a.maakbord();
-    //cout << a.eindstand()<< endl
-    while(i < 9){
-        cout << "5" << endl;
-        cin >> i;
+
+    while(!a.eindstand()){
         a.computerzet();
+        a.score();
         a.drukaf();
         i++;
     }
