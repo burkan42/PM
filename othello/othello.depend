@@ -1,12 +1,16 @@
 # depslib dependency file v1.0
-1668870746 source:c:\users\tolunay\documents\github\pm\hoofd.cc
+1670696394 source:c:\users\tolunay\documents\github\pm\hoofd.cc
 	<iostream>
+	<cstdlib>
+	<ctime>
 	"othellobord.h"
 
-1668872578 c:\users\tolunay\documents\github\pm\othellobord.h
+1670704344 c:\users\tolunay\documents\github\pm\othellobord.h
 
-1668870702 source:c:\users\tolunay\documents\github\pm\othellobord.cc
+1670704401 source:c:\users\tolunay\documents\github\pm\othellobord.cc
 	<iostream>
+	<cstdlib>
+	<ctime>
 	"othellobord.h"
 
 1669214358 source:c:\users\bnkoz\desktop\leiden universiteit\git\pm\hoofd.cc

@@ -20,6 +20,11 @@ class othellobord {
     void drukaf ( );
     void maakbord ( );
     void menu( );
+    void submenu ( );
+    void mtegenm ( );
+    void mtegenc ( );
+    void ctegenc ( );
+    void ctegenm ( );
     void score( ); //houdt de scores bij van de schijven
     void schijvenOmdraaien(bordvakje* ingang);//deze functie zal de schijven tussen de huidige schijf en de schijf tot waar de kleuren tegenovergesteld zijn omdraaien.
     bordvakje* kopieer(bordvakje* ingang); //kopieert de pointer structuur van gegeven ingangpointer
@@ -28,6 +33,8 @@ class othellobord {
     bordvakje* positie (int x, int y); //returnt pointer van bordvakje gegeven de coordinaten
 
     int breedte, hoogte;
+    char i, k ,l;
+    int p, q;
     int aantalz; // aantal zwarte vakjes
     int aantalw; // aantal witte vakjes
     int aantall; // aantal lege vakjes

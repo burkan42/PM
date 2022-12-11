@@ -461,19 +461,34 @@ void othellobord::drukaf ( )
 
 void othellobord::menu ( )
 {
-    char i;
+    int x, y, p, q;
     cout << "WELCOME TO OTHELLO!!" << endl;
     cout <<  "Wil je voor de zwarte stenen als een mens of computer spelen?"<< endl;
+test:
     cout << "voor een mens type M en voor een computer type C!"<< endl;
-    cin >> i;
-    cout <<  "Wil je voor de witte stenen als een mens of computer spelen?"<< endl;
-    cout << "voor een mens type M en voor een computer type C!"<< endl;
-    cin>> i;
-    cout << "De grootte van het bord is momenteel 8 bij 8 wil je die aanpassen?"<<endl;
-    cout<< "Type J voor ja en N voor nee!"<< endl;
     cin >> i;
 
     switch (i)
+    {
+    case 'C':
+    case 'c':
+        cout << "U heeft voor een computer gekozen!"<< endl;
+        break;
+    case 'M':
+    case 'm':
+        cout << "U heeft voor een mens gekozen!"<< endl;
+        break;
+    default :
+        cout << "No match! Please only input allowed characters!" << endl;
+        goto test;
+
+    }
+
+    cout <<  "Wil je voor de witte stenen als een mens of computer spelen?"<< endl;
+    cout << "voor een mens type M en voor een computer type C!"<< endl;
+    cin >> k;
+
+    switch (k)
     {
     case 'M':
     case 'm':
@@ -483,6 +498,17 @@ void othellobord::menu ( )
     case 'c':
         cout << "U heeft voor een computer gekozen!"<< endl;
         break;
+    }
+    submenu();
+}
+void othellobord::submenu ()
+{
+    cout << "De grootte van het bord is momenteel 8 bij 8 wil je die aanpassen?"<<endl;
+    cout<< "Type J voor ja en N voor nee!"<< endl;
+    cin >> l;
+
+    switch (l)
+    {
     case 'J':
     case 'j':
         cout << "Type het gewenste aantal rijen (groter of gelijk aan 2 en even):"<<endl;
@@ -501,16 +527,6 @@ void othellobord::menu ( )
             breedte = hoogte;
         }
 
-//            cout << "Type het gewenste aantal kolommen:"<<endl;
-//            cin >> breedte;//minstens 2 en even
-//                if (breedte< 2 && breedte%2==0){
-//                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-//                    cin >> breedte;
-//                }
-//                if (breedte> 2 && breedte%2==!0){
-//                    cout << "breedte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-//                    cin >> breedte;
-//                }
         cout << "Het bord is gewijzigd naar "<< hoogte << "x"<< breedte << endl;
         break;
 
@@ -521,9 +537,80 @@ void othellobord::menu ( )
         cout << "No match! Please only input allowed characters!";
         break;
     }
-
-
-
+        if (i == 'm'&& k == 'm')  // mens tegen mens
+    {
+        mtegenm ( );
+    }
+    if (i == 'c'&& k == 'm')  // mens wit pc zwart
+    {
+        ctegenm ( );
+    }
+    if (i == 'c'&& k == 'c')  // computer tegen computer
+    {
+        ctegenc ( );
+    }
+    if (i == 'm'&& k == 'c')  // mens zwart pc wit
+    {
+        mtegenc ( );
+    }
 }
+void othellobord::ctegenc ()
+{
+        while(!eindstand())
+        {
+            computerzet();
+            drukaf();
+            score();
+        }
+}
+void othellobord::mtegenc ()
+{
+        while(!eindstand())
+        {
+            cout << "Type de coridnaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
+            cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+            drukaf();
+            cin >> p;
+            cin >> q;
+            menszet(p,q);
+            drukaf();
+            score();
+            computerzet();
+            drukaf();
+            score();
+        }
+}
+void othellobord::ctegenm()
+{
+        while(!eindstand())
+        {
+            computerzet();
+            drukaf();
+            score ();
+            cout << "Type de coridnaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
+            cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+            drukaf();
+            cin >> p;
+            cin >> q;
+            menszet(p,q);
+            drukaf();
+            score ();
+        }
+}
+void othellobord::mtegenm ( )
+{
+        while(!eindstand())
+        {
+            cout << "Type de coridnaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
+            cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+            drukaf();
+            cin >> p;
+            cin >> q;
+            menszet(p,q);
+            drukaf();
+            score();
+        }
+}
+
 
 // TODO

@@ -10,6 +10,8 @@ int main ( ) {
 	othellobord a;
 	int i = 0;
     a.maakbord();
+    a.menu();
+    a.submenu();
 
     while(!a.eindstand()){
         a.computerzet();
