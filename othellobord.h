@@ -16,15 +16,17 @@ class othellobord {
     othellobord ( );
     ~othellobord ( );
     void menszet(int x, int y); //zet die een mens doet gegeven een coordinaat
-    void computerzet ( );
-    void drukaf ( );
-    void maakbord ( );
-    void menu( );
-    void submenu ( );
-    void mtegenm ( );
-    void mtegenc ( );
-    void ctegenc ( );
-    void ctegenm ( );
+    void computerzet ( ); //functie voor een computerzet
+    void drukaf ( ); //functie dat het bord afdrukt
+    void maakbord ( ); //maakboord functie
+    void menu( ); //menu functie
+    void meerdere(int aantal);
+    void win( ); //functie dat winnar aangeeft
+    void submenu ( ); //submenu functie
+    void mtegenm ( ); //zwart mens wit mens game case
+    void mtegenc ( ); //zwart mens wit computer game case
+    void ctegenc ( ); //zwart computer wit computer game case
+    void ctegenm ( ); //zwart computer wit mens game case
     void score( ); //houdt de scores bij van de schijven
     void schijvenOmdraaien(bordvakje* ingang);//deze functie zal de schijven tussen de huidige schijf en de schijf tot waar de kleuren tegenovergesteld zijn omdraaien.
     bordvakje* kopieer(bordvakje* ingang); //kopieert de pointer structuur van gegeven ingangpointer
@@ -32,9 +34,9 @@ class othellobord {
     bordvakje* rijtje (bordvakje* ingang); //maakt een rijtje van bordvakjes
     bordvakje* positie (int x, int y); //returnt pointer van bordvakje gegeven de coordinaten
 
-    int breedte, hoogte;
-    char i, k ,l;
-    int p, q;
+    int breedte, hoogte; //hoogte en breedte
+    char i, k ,l; //characters voor de switch cases
+    int p, q, u; //menszet invoer (coordinaten)
     int aantalz; // aantal zwarte vakjes
     int aantalw; // aantal witte vakjes
     int aantall; // aantal lege vakjes

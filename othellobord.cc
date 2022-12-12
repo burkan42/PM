@@ -7,8 +7,8 @@ using namespace std;
 
 othellobord::othellobord ( )
 {
-    breedte = 8;
-    hoogte = 8;
+    breedte = 4;
+    hoogte = 4;
     ingang = new bordvakje;
     uitgang = nullptr;
     beurt = 0;//zwart begint altijd eerst
@@ -17,11 +17,6 @@ othellobord::othellobord ( )
     aantall = 0;
     aantalz = 0;
     aantalw = 0;
-
-//    for (int i = 0; i < 8; i++){ //resetten van alle richtingen
-//        richtingen[i] = 0;
-//    }
-
 
 }//othellobord::othellobord
 
@@ -192,7 +187,8 @@ void othellobord::schijvenOmdraaien(bordvakje* ingang)
     char leeg = '-';
     char anderekleur = 'W'; //omgekeerde kleur van degene die aan beurt is
 
-    if(beurt == 1){
+    if(beurt == 1)
+    {
         anderekleur = 'Z';
     }
 
@@ -214,11 +210,11 @@ void othellobord::schijvenOmdraaien(bordvakje* ingang)
                         bordvakje* uitgang = loper->buren[i]; //locatie van vakje waar zelfde kleur is, wordt opgeslagen.
                         richting = i;
 
-                            while(start != uitgang)
-                            {
-                                start ->kleur = beurtkleur;//kleur van huidige vak veranderen
-                                start = start->buren[richting];//naar volgende vak gaan
-                            }
+                        while(start != uitgang)
+                        {
+                            start ->kleur = beurtkleur;//kleur van huidige vak veranderen
+                            start = start->buren[richting];//naar volgende vak gaan
+                        }
                     }
                     loper = loper->buren[i]; //naar volgende buur
                 }
@@ -234,7 +230,7 @@ bordvakje* othellobord::positie (int x, int y)
     bordvakje* loper = ingang; //loper begint bij ingang
     bordvakje* loper2; //loper door rijen
 
-    if (x > breedte|| y > hoogte || x < 1 || y < 1)
+    if (x> breedte|| y > hoogte || x < 1 || y < 1)
     {
         cout << "Coordinaten buiten het bord!" << endl;
         return 0;
@@ -282,13 +278,16 @@ void othellobord::menszet(int x, int y)
 
     if(toegestaan(x, y))  //indien zet toegestaan,  invullen
     {
+
+        cout << ">>>>beurt van " << beurtkleur << "<<<<"<<endl;
+        cout << "zet(" << x << ", " << y << ")";
         start->kleur = beurtkleur;
         schijvenOmdraaien(start);
         switchBeurt();//switcht beurt
     }
     else
     {
-        cout << "Zet niet toegestaan" << endl;
+        cout << "Zet niet toegestaan! Voer een geldige zet in!"<< endl;
     }
 
 }
@@ -305,19 +304,24 @@ void othellobord::score ( )
     aantalz = 0;
     aantalw = 0;
 
-    while (loper2 != nullptr){ // hij gaat door alle rijen heen
+    while (loper2 != nullptr)  // hij gaat door alle rijen heen
+    {
         loper = loper2; // loper moet weer naar de ingang van rij toe
 
-       while (loper != nullptr){ // hij gaat alle vakjes in een rij langs
+        while (loper != nullptr)  // hij gaat alle vakjes in een rij langs
+        {
 
-            if (loper->kleur == 'Z'){ // als vakje een Z heeft dan aantalz tellen
-               aantalz++;
+            if (loper->kleur == 'Z')  // als vakje een Z heeft dan aantalz tellen
+            {
+                aantalz++;
             }
-            if (loper->kleur == 'W'){ // als vakje een W heeft dan aantalw tellen
-               aantalw++;
+            if (loper->kleur == 'W')  // als vakje een W heeft dan aantalw tellen
+            {
+                aantalw++;
             }
-            if (loper->kleur == '-'){ // als vakje een - heeft dan aantall tellen
-               aantall++;
+            if (loper->kleur == '-')  // als vakje een - heeft dan aantall tellen
+            {
+                aantall++;
             }
 
             loper = loper->buren[2]; //loper naar volgende vakje
@@ -326,8 +330,9 @@ void othellobord::score ( )
         loper2 = loper2->buren[4]; // loper naar volgende rij
 
     }
+    cout << "<<<<SCORE>>>>"<< endl;
     cout << " " << "W"  << "  "<< "Z" << "  "<< "L" << endl;
-    cout << " " << aantalw  << " "<< aantalz << " "<< aantall;
+    cout << " " << aantalw  << "  "<< aantalz << "  "<< aantall << endl;
 }
 
 // Gegeven een x en y coordinaat controleert deze functie
@@ -377,17 +382,17 @@ void othellobord::computerzet()
 {
 
     srand(time(NULL)); //maakt mogelijk om telkens een nieuwe rand() te genereren
-    int x = (rand( ) % hoogte) + 1, y = (rand( ) % hoogte) + 1; //definieren van x en y coordinaat
+    int x = (rand( ) % breedte) + 1, y = (rand( ) % hoogte) + 1; //definieren van x en y coordinaat
 
     while(!toegestaan(x, y))  //zolang er geen toegestane zet is gegeneerd, random creeeren
     {
-        x = (rand( ) % 8) + 1; //bepaal x coordinaat
-        y = (rand( ) % 8) + 1; //bepaal y coordinaat
+        x = (rand( ) % breedte) + 1; //bepaal x coordinaat
+        y = (rand( ) % hoogte) + 1; //bepaal y coordinaat
 
         if(toegestaan(x, y))  //indien wel een toegestaan zet mogelijk is, deze zet doen
         {
-            cout << "beurtkleur: " << beurtkleur << endl;
-            cout << "move: " << x << ", " << y << endl;
+            cout << ">>>>beurt van " << beurtkleur << "<<<<"<<endl;
+            cout << "zet(" << x << ", " << y << ")";
             bordvakje* start = positie(x, y); //bepaal een start positie voor zet
             start->kleur = beurtkleur;
             schijvenOmdraaien(start);
@@ -407,11 +412,11 @@ bool othellobord::eindstand( )
     bordvakje* loper2; //loper door rijen
 
 
-    for ( int k = 1; k < hoogte; k++)
+    for ( int k = 1; k < hoogte + 1; k++)
     {
         loper2 = loper;
 
-        for ( int l = 1; l < breedte; l++)
+        for ( int l = 1; l < breedte + 1; l++)
         {
             if(toegestaan(l,k))  //indien er minimaal één toegestane zet is, return false
             {
@@ -422,7 +427,7 @@ bool othellobord::eindstand( )
         loper2 = loper2->buren[4]; //loper2 naar volgende rij
         loper = loper2; //loper wijst naar volgende rij
     }
-
+    //cout << "!EIND SPEL!" << endl;
     return true;
 
 }
@@ -458,17 +463,17 @@ void othellobord::drukaf ( )
     }
 }//othellobord::drukaf
 
-
+//menu functie
 void othellobord::menu ( )
 {
     int x, y, p, q;
     cout << "WELCOME TO OTHELLO!!" << endl;
     cout <<  "Wil je voor de zwarte stenen als een mens of computer spelen?"<< endl;
+    cout << "Voor een mens toets M en voor een computer toets C!"<< endl;
 test:
-    cout << "voor een mens type M en voor een computer type C!"<< endl;
     cin >> i;
 
-    switch (i)
+    switch (i) //feedback op keuze van speler zwart
     {
     case 'C':
     case 'c':
@@ -479,16 +484,17 @@ test:
         cout << "U heeft voor een mens gekozen!"<< endl;
         break;
     default :
-        cout << "No match! Please only input allowed characters!" << endl;
+        cout << "Geen match! Toets in M of C!" << endl;
         goto test;
 
     }
 
     cout <<  "Wil je voor de witte stenen als een mens of computer spelen?"<< endl;
-    cout << "voor een mens type M en voor een computer type C!"<< endl;
+    cout << "Voor een mens toets M en voor een computer toets C!"<< endl;
+test2:
     cin >> k;
 
-    switch (k)
+    switch (k)//feedback op keuze van speler wit
     {
     case 'M':
     case 'm':
@@ -498,46 +504,53 @@ test:
     case 'c':
         cout << "U heeft voor een computer gekozen!"<< endl;
         break;
+    default :
+        cout << "Geen match! Toets in M of C!" << endl;
+        goto test2;
     }
     submenu();
 }
+//submenu functie
 void othellobord::submenu ()
 {
-    cout << "De grootte van het bord is momenteel 8 bij 8 wil je die aanpassen?"<<endl;
-    cout<< "Type J voor ja en N voor nee!"<< endl;
+    cout << "De grootte van het bord is momenteel " << breedte << " bij " << hoogte <<" wil je die aanpassen?"<<endl;
+    cout<< "Toets J voor ja en N voor nee!"<< endl;
+test3:
     cin >> l;
 
-    switch (l)
+    switch (l) //aanpassen van het bord
     {
     case 'J':
     case 'j':
-        cout << "Type het gewenste aantal rijen (groter of gelijk aan 2 en even):"<<endl;
+        cout << "Toets het gewenste aantal rijen (groter of gelijk aan 2 en even):"<<endl;
         cin >> hoogte;//minstens 2 en even
+        if (hoogte < 2) //als het invoer kleiner is dan 2
+        {
+            cout << "Getal is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
+            cin >> hoogte;
+            breedte = hoogte;
+        }
+        if (hoogte >= 2 && hoogte%2==!0) //als het invoer groter is dan twee maar niet even is
+        {
+            cout << "Kies een even getal aub!"<<endl;
+            cin >> hoogte;
+            breedte = hoogte;
+        }
         breedte = hoogte;
-        if (hoogte< 2 && hoogte%2==0)
-        {
-            cout << "hoogte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-            cin >> hoogte;
-            breedte = hoogte;
-        }
-        if (hoogte> 2 && hoogte%2==!0)
-        {
-            cout << "hoogte is te klein! Kies een even getal groter of gelijk aan 2!"<<endl;
-            cin >> hoogte;
-            breedte = hoogte;
-        }
-
-        cout << "Het bord is gewijzigd naar "<< hoogte << "x"<< breedte << endl;
+        maakbord();
+        cout << "Het bord is gewijzigd naar "<< hoogte << "x"<< breedte;
+        drukaf();
         break;
-
     case 'N':
     case 'n':
-        cout<< "De groote van het bord is " << hoogte <<"x" << breedte << endl;
-    default:
-        cout << "No match! Please only input allowed characters!";
+        cout<< "De groote van het bord is " << hoogte <<"x" << breedte;
+        drukaf();
         break;
+    default:
+        cout << "Geen match! Toets in J of N!" << endl;
+        goto test3;
     }
-        if (i == 'm'&& k == 'm')  // mens tegen mens
+    if (i == 'm'&& k == 'm')  // mens tegen mens
     {
         mtegenm ( );
     }
@@ -547,70 +560,107 @@ void othellobord::submenu ()
     }
     if (i == 'c'&& k == 'c')  // computer tegen computer
     {
-        ctegenc ( );
+        cout << "Hoeveel spelletjes moeten er gespeeld worden?"<<endl;
+        cin >> u;
+        if (u == 1){
+            ctegenc ( );
+        }
+        else
+            meerdere (u);
     }
     if (i == 'm'&& k == 'c')  // mens zwart pc wit
     {
         mtegenc ( );
     }
 }
+//game case van zwart en wit als computer
 void othellobord::ctegenc ()
 {
-        while(!eindstand())
-        {
-            computerzet();
-            drukaf();
-            score();
-        }
+
+    while(!eindstand())
+    {
+        computerzet();
+        drukaf();
+        score();
+
+    }
+
 }
-void othellobord::mtegenc ()
+//game case van zwart mens en wit computer
+void othellobord::mtegenc () // mens zwart pc wit
 {
-        while(!eindstand())
-        {
-            cout << "Type de coridnaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
-            cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
-            drukaf();
-            cin >> p;
-            cin >> q;
-            menszet(p,q);
-            drukaf();
-            score();
-            computerzet();
-            drukaf();
-            score();
-        }
+    while(!eindstand())
+    {
+        cout << "Toets de cordinaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
+        cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+        cin >> p;
+        cin >> q;
+        menszet(p,q);
+        drukaf();
+        score();
+        computerzet();
+        drukaf();
+        score();
+    }
 }
+//game case van zwart computer en wit mens
 void othellobord::ctegenm()
 {
-        while(!eindstand())
-        {
-            computerzet();
-            drukaf();
-            score ();
-            cout << "Type de coridnaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
-            cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
-            drukaf();
-            cin >> p;
-            cin >> q;
-            menszet(p,q);
-            drukaf();
-            score ();
-        }
+    while(!eindstand())
+    {
+        computerzet();
+        drukaf();
+        score ();
+        cout << "Toets de cordinaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
+        cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+        cin >> p;
+        cin >> q;
+        menszet(p,q);
+        drukaf();
+        score ();
+    }
 }
+//game case van zwart mens en wit mens
 void othellobord::mtegenm ( )
 {
-        while(!eindstand())
-        {
-            cout << "Type de coridnaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
-            cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
-            drukaf();
-            cin >> p;
-            cin >> q;
-            menszet(p,q);
-            drukaf();
-            score();
-        }
+    while(!eindstand())
+    {
+        cout << "Toets de cordinaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
+        cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+        cin >> p;
+        cin >> q;
+        menszet(p,q);
+        drukaf();
+        score();
+    }
 }
+// dit is de functie dat de winaar afdrukt
+void othellobord::win( )
+{
+    if (aantalw<aantalz)
+    {
+        cout<< "Zwart heeft gewonnen!"<<endl;
+    }
+    if (aantalz<aantalw)
+    {
+        cout<< "Wit heeft gewonnen!"<<endl;
+    }
+    if (aantalw == aantalz && aantalz==aantalw)
+    {
+        cout<< "Gelijkspel!"<<endl;
+    }
+}
+void othellobord::meerdere(int aantal){
+    cout << eindstand();
+      //  if (u == 1) // als er maar een spel wordt gespeeld
+    for (int i=0;i < aantal;i++){
+        if (!eindstand()){
+
+            ctegenc();
+        }
+    }
 
 
+    cout <<eindstand();
+}
 // TODO

@@ -11,13 +11,20 @@ int main ( ) {
 	int i = 0;
     a.maakbord();
     a.menu();
-    a.submenu();
+    a.win();
+    //a.meerdere();
 
-    while(!a.eindstand()){
-        a.computerzet();
-        a.score();
-        a.drukaf();
-        i++;
-    }
+    //a.submenu();
+
+
+    //while(!a.eindstand()){
+      //  a.computerzet();
+        //a.score();
+        //a.drukaf();
+        //i++;
+
+       // a.menu();
+       // a.submenu();
+    //}
 
 }//main
