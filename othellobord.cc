@@ -1,5 +1,6 @@
 // file othellobord.cc
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <ctime>
 #include "othellobord.h"
@@ -7,8 +8,8 @@ using namespace std;
 
 othellobord::othellobord ( )
 {
-    breedte = 4;
-    hoogte = 4;
+    breedte = 8;
+    hoogte = 8;
     ingang = new bordvakje;
     uitgang = nullptr;
     beurt = 0;//zwart begint altijd eerst
@@ -22,7 +23,7 @@ othellobord::othellobord ( )
 
 othellobord::~othellobord ( )
 {
-
+    bordwissen(); //reset het bord
 }//othellobord::~othellobord
 
 bordvakje::bordvakje ( )
@@ -284,6 +285,7 @@ void othellobord::menszet(int x, int y)
         start->kleur = beurtkleur;
         schijvenOmdraaien(start);
         switchBeurt();//switcht beurt
+        aantalzetten++;
     }
     else
     {
@@ -391,12 +393,13 @@ void othellobord::computerzet()
 
         if(toegestaan(x, y))  //indien wel een toegestaan zet mogelijk is, deze zet doen
         {
-            cout << ">>>>beurt van " << beurtkleur << "<<<<"<<endl;
-            cout << "zet(" << x << ", " << y << ")";
+            //!cout << ">>>>beurt van " << beurtkleur << "<<<<"<<endl;
+            //!cout << "zet(" << x << ", " << y << ")";
             bordvakje* start = positie(x, y); //bepaal een start positie voor zet
             start->kleur = beurtkleur;
             schijvenOmdraaien(start);
             switchBeurt();//switcht beurt
+            aantalzetten++;
 
             break; //uit de loop gaan
         }
@@ -562,7 +565,8 @@ test3:
     {
         cout << "Hoeveel spelletjes moeten er gespeeld worden?"<<endl;
         cin >> u;
-        if (u == 1){
+        if (u == 1)
+        {
             ctegenc ( );
         }
         else
@@ -576,24 +580,24 @@ test3:
 //game case van zwart en wit als computer
 void othellobord::ctegenc ()
 {
-
+    drukaf();
     while(!eindstand())
     {
         computerzet();
-        drukaf();
-        score();
-
     }
-
+    //!score();
+    drukaf();
 }
 //game case van zwart mens en wit computer
 void othellobord::mtegenc () // mens zwart pc wit
 {
+    cout << "Zwart begint als eerst."<< endl;
     while(!eindstand())
     {
-        cout << "Toets de cordinaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
-        cout<< "De cordinaten moeten toegestaan zijn en op een lege vakje "<< endl;
+        cout << "Toets de coordinaten van uw zet."<< endl;
+        cout<< "X: ";
         cin >> p;
+        cout<< "Y: ";
         cin >> q;
         menszet(p,q);
         drukaf();
@@ -605,7 +609,8 @@ void othellobord::mtegenc () // mens zwart pc wit
 }
 //game case van zwart computer en wit mens
 void othellobord::ctegenm()
-{
+{    cout << "Zwart begint als eerst."<< endl;
+
     while(!eindstand())
     {
         computerzet();
@@ -622,7 +627,8 @@ void othellobord::ctegenm()
 }
 //game case van zwart mens en wit mens
 void othellobord::mtegenm ( )
-{
+{    cout << "Zwart begint als eerst."<< endl;
+
     while(!eindstand())
     {
         cout << "Toets de cordinaten van uw zet! Eerst de X cordinaat en dan Y."<< endl;
@@ -649,18 +655,46 @@ void othellobord::win( )
     {
         cout<< "Gelijkspel!"<<endl;
     }
-}
-void othellobord::meerdere(int aantal){
-    cout << eindstand();
-      //  if (u == 1) // als er maar een spel wordt gespeeld
-    for (int i=0;i < aantal;i++){
-        if (!eindstand()){
 
+    cout << "totaal aantalzetten is "<< aantalzetten << endl;
+}
+
+void othellobord::meerdere(int aantal)
+{
+    ofstream MyFile("stats.txt"); //bestand aanmaken voor de statistieken
+    for (int i=0; i < aantal; i++)
+    {
+        cout << "-----------------------------------"<< endl;
+        if (!eindstand())
+        {
             ctegenc();
+            bordwissen( ); //resetten van bord
+            MyFile << i << " " << aantalzetten/2 << endl; //aantalzetten toevoegen aan file
+            aantalzetten = 0;
         }
     }
+    MyFile.close();
 
-
-    cout <<eindstand();
 }
-// TODO
+
+//deze functie verwijderd alle schijven in het huidige bord
+void othellobord::bordwissen( )
+{
+    bordvakje* loper1 = ingang; //loper1 begint bij ingang
+    bordvakje* loper2 = loper1; //loper2 begint bij ingang
+
+    while (loper1 != NULL)  //loop door rijen
+    {
+        loper2 = loper1;
+        while (loper2->buren[2] != NULL)  //loop door kolommen
+        {
+            loper2->kleur = ' - ';
+            loper2 = loper2->buren[2]; //naar volgende vakje
+        }
+        loper1 = loper1->buren[4]; //naar volgende rij gaan
+    }
+    maakbord(); //bord opnieuw maken met beginposities ingevuld
+
+}
+
+void

@@ -28,6 +28,7 @@ class othellobord {
     void ctegenc ( ); //zwart computer wit computer game case
     void ctegenm ( ); //zwart computer wit mens game case
     void score( ); //houdt de scores bij van de schijven
+    void bordwissen( ); //deze functie verwijderd alle schijven in het huidige bord
     void schijvenOmdraaien(bordvakje* ingang);//deze functie zal de schijven tussen de huidige schijf en de schijf tot waar de kleuren tegenovergesteld zijn omdraaien.
     bordvakje* kopieer(bordvakje* ingang); //kopieert de pointer structuur van gegeven ingangpointer
     bordvakje* kopieerRijtje(bordvakje* ingang, bordvakje* kopie); //kopieert een hele rij van een ingangpointer naar een kopiepointer
@@ -37,9 +38,10 @@ class othellobord {
     int breedte, hoogte; //hoogte en breedte
     char i, k ,l; //characters voor de switch cases
     int p, q, u; //menszet invoer (coordinaten)
-    int aantalz; // aantal zwarte vakjes
-    int aantalw; // aantal witte vakjes
-    int aantall; // aantal lege vakjes
+    int aantalzetten; //totaal aantal zetten die beiden spelers samen hebben gezet
+    int aantalz; // aantal zwarte schijven
+    int aantalw; // aantal witte schijven
+    int aantall; // aantal lege schijven
     //int richtingen [8]; //wordt gebruikt om de richtingen te bepalen waarin schrijven gedraaid moeten worden
     void switchBeurt( );//switch de beurt van speler nadat zet is gemaakt
     char beurtkleur; //kleur van beurt die op bord komt

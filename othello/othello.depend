@@ -23,16 +23,18 @@
 	<iostream>
 	"othellobord.h"
 
-1670427248 source:c:\users\burak ozdemir\documents\github\pm\hoofd.cc
+1670854552 source:c:\users\burak ozdemir\documents\github\pm\hoofd.cc
 	<iostream>
+	<fstream>
 	<cstdlib>
 	<ctime>
 	"othellobord.h"
 
-1670424723 c:\users\burak ozdemir\documents\github\pm\othellobord.h
+1670854518 c:\users\burak ozdemir\documents\github\pm\othellobord.h
 
-1670427465 source:c:\users\burak ozdemir\documents\github\pm\othellobord.cc
+1670854816 source:c:\users\burak ozdemir\documents\github\pm\othellobord.cc
 	<iostream>
+	<fstream>
 	<cstdlib>
 	<ctime>
 	"othellobord.h"
